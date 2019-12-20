@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>判断质数</title>
+	</head>
+	<body>
+		<script>
+		//判断传入数字是否为质数
+		//质数特点:只能被1和它本身整除
+		//方法一
+			// function isPrime(num){
+			// 	for(var i=2;i<num; i++){
+			// 		if(num % i == 0){
+			// 			return false
+			// 		}
+			// 	}
+			// 	
+			// 	return true
+			// }
+			//方法二
+			function isPrime(num){
+				//1.获得num的平方根
+				var temp = parseInt(Math.sqrt(num))
+				
+				for(var i =2; i< temp; i++){
+					if(num % i == 0){
+						return false
+					}
+				}
+				
+				return true
+			}
+			alert(isPrime(3))
+			alert(isPrime(11))
+			alert(isPrime(20))
+			
+			
+		</script>
+	</body>
+</html>

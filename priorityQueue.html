@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>优先级队列</title>
+	</head>
+	<body>
+		<script>
+			//封装优先级队列
+			function PriorityQueue(){
+				//在PriorityQueue中直接创建了一个类,可以理解成内部类
+				function QueueElement(element, priority){
+					this.element = element
+					this.priority = priority
+				}
+				//封装属性
+				this.items = []
+				
+				//实现输入方法 
+				//1.按照优先级将数据插入队列
+				PriorityQueue.prototype.enqueue = function(element, priority){
+					//1.创建QueueElement对象
+					var queueElment = new QueueElement(element, priority)
+					//2.判断队列是否为空
+					if(this.items.length === 0){
+						this.items.push(queueElment)
+					}else{
+						var added = false
+						for(let i=0;i<this.items.length;i++){
+							if(queueElment.priority < this.items[i].priority){
+								this.items.splice(i,0,queueElment)
+								added = true
+								break
+							}
+						}
+						if(!added){
+							this.items.push(queueElment)
+						}
+					}
+					
+				}
+				//2.从队列中删除前端元素
+				PriorityQueue.prototype.dequeue = function(){
+					return this.items.shift()
+				}
+				//3.查看前端元素
+				PriorityQueue.prototype.front = function(){
+					return this.items[0]
+				}
+				//4.查看元素是否为空
+				PriorityQueue.prototype.isEmpty = function(){
+					return this.items.length === 0
+				}
+				//5.查看队列中元素的个数
+				PriorityQueue.prototype.size = function(){
+					return this.items.length
+				}
+				//6.toString方法
+				PriorityQueue.prototype.toString = function(){
+					var resultString = ''
+					for(let i=0;i<this.items.length;i++){
+						resultString += this.items[i].element+ '-'+ this.items[i].priority+' '
+					}
+					return resultString
+				}
+				
+			}
+			
+			//测试优先级
+			var pq = new PriorityQueue()
+			pq.enqueue('a',20)
+			pq.enqueue('g',60)
+			pq.enqueue('b',30)
+			pq.enqueue('h',100)
+			alert(pq)
+		</script>
+	</body>
+</html>

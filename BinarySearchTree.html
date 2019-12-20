@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>树结构</title>
+	</head>
+	<body>
+		<script>
+			//封装二叉搜索树
+			function BinarySearchTree(){
+				
+				function Node(key){
+					this.key = key
+					this.left = null
+					this.right = null
+				}
+				//属性
+				this.root = null
+				//方法
+				BinarySearchTree.prototype.insert = function(key){
+					var newNode = new Node(key)
+					if(this.root === null){
+						this.root = newNode
+					}else{
+						this.insertNode(this.root, newNode)
+					}
+					
+				}
+				
+				//利用递归方法插入数据
+				BinarySearchTree.prototype.insertNode = function(node,newNode){
+					if(newNode.key < node.key){//向左查找
+						if(node.left ==null){
+							node.left = newNode
+						}else{
+							this.insertNode(node.left,newNode)
+						}
+					}else{
+						if(node.right ==null){
+							node.right = newNode
+						}else{
+							this.insertNode(node.right,newNode)
+						}
+					}
+				}
+				
+				//树的遍历
+				//1.先序遍历
+				BinarySearchTree.prototype.preOrderTraversal = function(hander){
+					this.preOrderTraversalNode(this.root,hander)
+				}
+				//2.递归遍历子节点
+				BinarySearchTree.prototype.preOrderTraversalNode = function(node, hander){
+					if(node!=null){
+						//2.1 获得当前值
+						hander(node.key)
+						//2.2 遍历左侧的子节点树
+						this.preOrderTraversalNode(node.left,hander)
+						//2.3 遍历右侧的子节点树
+						this.preOrderTraversalNode(node.right,hander)
+						
+					}
+				}
+				//搜索特定的key
+				BinarySearchTree.prototype.search = function(key){
+					var node = this.root
+					while(node!=null){
+						if(key < node.key){
+							node = node.left
+						}else if(key > node.key){
+							node = node.right
+						}else{
+							return true
+						}
+					}
+					
+					return false
+				}
+				
+				//树的最大值
+				BinarySearchTree.prototype.max = function(){
+					//1.获取根节点
+					var node = this.root
+					//2.向右查找,直到node为null
+					var key = null
+					while(node!=null){
+						key = node.key
+						node = node.right
+					}
+					return key
+				}
+				
+				//树的最小值
+				BinarySearchTree.prototype.min = function(){
+					var node = this.root
+					while(node.left!=null){
+						node = node.left
+					}
+					return node.key
+				}
+				
+				BinarySearchTree.prototype.remove = function(key){
+					//1.寻找要删除的节点
+					//1.1 定义变量,记录找到的节点及位置
+					var current = this.root
+					var parent = null
+					var isLeftNode = null
+					//1.2 开始寻找要删除的节点
+					while(current.key != key){
+						parent = current
+						if(key < current.key){
+							isLeftNode = true
+							current = current.left
+						}else{
+							isLeftNode = false
+							current = current.right
+						}
+						//current已经指向了null,说明没有找到需要删除的key
+						if(current == null){
+							return false
+						}
+					}
+							
+					//2.根据不同的情况删除节点
+					//找到了current.key ==key
+					//2.1 删除叶子节点(没有子节点的节点)
+					if(current.right ==null && current.left == null){
+						if(parent===this.root){
+							this.root = null
+						}else if(isLeftNode){
+							parent.left = null
+						}else{
+							parent.right = null
+						}
+					}else if(current.right === null){
+						//2.2 删除只有一个节点的节点
+						if(current == this.root){
+							this.root = current.left
+						}else if(isLeftNode){
+							parent.left = current.left
+						}else{
+							parent.right = current.left
+						}
+					}else if(current.left === null){
+						if(current == this.root){
+							this.root = current.right
+						}else if(isLeftNode){
+							parent.left = current.right
+						}else{
+							parent.right = current.right
+						}
+					}else{//2.3 删除有两个节点的节点
+						//1.获得后继节点
+						var successor = this.getSuccessor(current)
+						//2.判断是否为根节点,并用后继节点代替 删除节点 位置
+						if(current === this.root){
+							this.root = successor
+						}else if(isLeftNode){
+							parent.left = successor
+						}else{
+							parent.right = successor
+						}
+						//3.将删除节点的左子树赋值给 后继节点； 
+						successor.left = current.left
+					}
+					
+					return true
+				}
+				
+				//找后继的方法
+				BinarySearchTree.prototype.getSuccessor = function(delNode){
+					//1.定义变量,记录找到的后继
+					var successor = delNode
+					var current = successor
+					var parentSuccessor = current
+					//2.循环查找右子树上的最小值,即找到current.left==null
+					while(current!=null){
+						parentSuccessor = successor
+						successor= current
+						current = current.left
+					}
+					//3.判断后继是否是delNode的right节点
+					//不是的话,将后继的右节点赋值给后继的父节点：后继的父节点.left = 后继.right;
+					//将删除节点的右子树赋值给 后继节点：后继.right = delNode.right
+					if(successor!= delNode.right){
+						parentSuccessor.left = successor.right
+						successor.right = delNode.right
+					}
+					
+					return successor
+				}
+				
+			}
+			
+			var bst = new BinarySearchTree()
+			bst.insert(11)
+			bst.insert(7)
+			bst.insert(15)
+			bst.insert(5)
+			bst.insert(3)
+			bst.insert(9)
+			bst.insert(8)
+			bst.insert(10)
+			bst.insert(13)
+			bst.insert(12)
+			bst.insert(14)
+			bst.insert(20)
+			bst.insert(18)
+			bst.insert(25)
+			bst.insert(6)
+			
+			//测试先序遍历
+			var resultString =''
+			bst.preOrderTraversal(function(key){
+				 resultString +=key + ' ' 
+			})
+			alert(resultString)
+			
+			// alert('max:'+bst.max())
+			// alert(bst.min())
+			// 
+			// alert(bst.search(13))
+			// alert(bst.search(1))
+			bst.remove(9)
+			bst.remove(7)
+			bst.remove(15)
+			var resultString =''
+			bst.preOrderTraversal(function(key){
+				 resultString +=key + ' ' 
+			})
+			alert(resultString)
+		</script>
+	</body>
+</html>

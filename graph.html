@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>图结构</title>
+	</head>
+	<body>
+		<script src='dict.js'></script>
+		<script>
+			//封装图结构
+			function Graph(){
+				//属性:顶点(数组)/边(字典)
+				this.vertexes = [] //顶点
+				this.edges = new Dictionary()//边
+				
+				//1.添加顶点的方法
+				Graph.prototype.addVertex = function(v){
+					this.vertexes.push(v)
+					this.edges.set(v,[])
+				}
+				//2.添加边的方法
+				Graph.prototype.addEdge = function(v1,v2){
+					this.edges.get(v1).push(v2)
+					//若是无向图再添加v2顶点指向v1顶点的边
+					this.edges.get(v2).push(v1)
+				}
+				
+				//toString方法,利用循环取出顶点对应的数组(edge)
+				Graph.prototype.toString = function(){
+					var resultStr = ""
+					console.log('toString')
+					console.log(this.vertexes)
+					for(var i=0; i< this.vertexes.length;i++){
+						resultStr += this.vertexes[i] + '->'
+						var vEdges = this.edges.get(this.vertexes[i])
+						for(var j=0; j< vEdges.length; j++ ){
+							resultStr += vEdges[j] + ' '
+						}
+						
+						resultStr +='\n'
+					}
+					
+					return resultStr
+				}
+				
+				Graph.prototype.initializeVertexes = function(){
+					var colors = []
+					for(var i=0;i<this.vertexes.length;i++){
+						colors[this.vertexes[i]] = 'white'
+					}
+					
+					return colors
+				}
+			}
+			
+			var graph = new Graph()
+			var myVertexes = ['A','B','C','D','E','F','G','H','I']
+			for(var i=0; i< myVertexes.length;i++){
+				graph.addVertex(myVertexes[i])
+			}
+			
+			graph.addEdge('A','B')
+			graph.addEdge('A','C')
+			graph.addEdge('A','D')
+			graph.addEdge('C','D')
+			graph.addEdge('C','G')
+			graph.addEdge('D','G')
+			graph.addEdge('D','H')
+			graph.addEdge('B','E')
+			graph.addEdge('B','F')
+			graph.addEdge('E','I')
+			alert(graph.toString())
+		</script>
+	</body>
+</html>
